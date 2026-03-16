@@ -1,13 +1,13 @@
 # Signadot Actions
 
-Built-in action definitions for the Signadot platform, following the
-[Agent Skills](https://agentskills.io/specification) directory convention.
+Built-in action definitions for the Signadot platform. The directory layout is
+inspired by the [Agent Skills](https://agentskills.io/specification) spec.
 
-Each action is a directory containing a `SKILL.md` file with YAML frontmatter
+Each action is a directory containing an `ACTION.md` file with YAML frontmatter
 and a markdown body describing the action's behavior, inputs, outputs, and
 executable script blocks.
 
-## SKILL.md Format
+## ACTION.md Format
 
 ### Frontmatter
 
@@ -42,5 +42,5 @@ language tag and are extracted separately for runner capability checks.
 
 | Action | Description |
 | ------ | ----------- |
-| [`request-http`](request-http/SKILL.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
-| [`check`](check/SKILL.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
+| [`request-http`](request-http/ACTION.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
+| [`check`](check/ACTION.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
