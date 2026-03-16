@@ -34,5 +34,13 @@ The body is the action implementation as markdown with fenced code blocks.
 `\output{...}` supports the same options except `required`.
 
 **Script blocks** are fenced code blocks that define the executable
-implementation of the action. **Validation blocks** use the `validation`
+implementation of the action. Scripts read inputs from `./input/<name>` and
+write outputs to `./output/<name>`. **Validation blocks** use the `validation`
 language tag and are extracted separately for runner capability checks.
+
+## Actions
+
+| Action | Description |
+| ------ | ----------- |
+| [`request-http`](request-http/SKILL.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
+| [`check`](check/SKILL.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
