@@ -1,0 +1,38 @@
+# Signadot Actions
+
+Built-in action definitions for the Signadot platform, following the
+[Agent Skills](https://agentskills.io/specification) directory convention.
+
+Each action is a directory containing a `SKILL.md` file with YAML frontmatter
+and a markdown body describing the action's behavior, inputs, outputs, and
+executable script blocks.
+
+## SKILL.md Format
+
+### Frontmatter
+
+Standard [Agent Skills](https://agentskills.io/specification) fields (`name`,
+`description`, etc.) plus:
+
+| Field      | Description |
+| ---------- | ----------- |
+| `requires` | Runtime dependencies that must be present on the runner. Each entry is a binary name with an optional semver constraint (e.g. `node >= 20`, `npx`, `playwright`). |
+
+### Body
+
+The body is the action implementation as markdown with fenced code blocks.
+
+**Inline I/O declarations** use `\input{...}` and `\output{...}` syntax:
+
+```
+\input{name}
+\input{name, required}
+\input{name, default="value"}
+\input{name, required, schema={"type":"integer","minimum":1}}
+```
+
+`\output{...}` supports the same options except `required`.
+
+**Script blocks** are fenced code blocks that define the executable
+implementation of the action. **Validation blocks** use the `validation`
+language tag and are extracted separately for runner capability checks.
