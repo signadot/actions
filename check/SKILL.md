@@ -8,17 +8,17 @@ requires:
   - actionbox
 ---
 
-Evaluate \input{expression, required} against \input{input, required} and
+Evaluate \input{expression, required} against \input{object, required} and
 produce \output{result} indicating pass or fail. \input{name, required}
 identifies the check in results.
 
 The expression is an [Expr](https://expr-lang.org) boolean expression evaluated
-against the input JSON. The input is parsed as a JSON object and its top-level
+against the input JSON object. The object is parsed as JSON and its top-level
 keys become variables in the expression. Non-boolean expressions are rejected at
 compile time.
 
-\input{attrs} is a list of `key=value` attributes to include in error output
-for additional context.
+\input{attrs, schema=schemas/attrs.json} is a list of `key=value` attributes to
+include in error output for additional context.
 
 \input{results_file} is a path to append results in NDJSON format. Multiple
 invocations can append to the same file.
@@ -64,7 +64,7 @@ Fail:
 args=(
   --name "$(cat ./input/name)"
   --expression "$(cat ./input/expression)"
-  --input ./input/input
+  --input ./input/object
 )
 
 [ -f ./input/results_file ] && args+=(--results-file ./input/results_file)
