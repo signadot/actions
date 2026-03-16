@@ -67,7 +67,7 @@ args=(
   --input ./input/input
 )
 
-[ -f ./input/results_file ] && args+=(--results-file "$(cat ./input/results_file)")
+[ -f ./input/results_file ] && args+=(--results-file ./input/results_file)
 
 if [ -f ./input/attrs ]; then
   while IFS= read -r attr; do
