@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "required": ["check"],
+  "properties": {
+    "check": { "type": "string" },
+    "error": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "attrs": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "required": ["message"]
+    }
+  }
+}

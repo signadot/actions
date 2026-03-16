@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "required": ["request", "response"],
+  "properties": {
+    "request": {
+      "type": "object",
+      "properties": {
+        "proto": { "type": "string" },
+        "method": { "type": "string" },
+        "uri": { "type": "string" },
+        "host": { "type": "string" },
+        "query": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "startedAt": { "type": "string", "format": "date-time" },
+            "headers": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            },
+            "body": {}
+          }
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "statusCode": { "type": "integer" },
+        "proto": { "type": "string" },
+        "error": { "type": "string" },
+        "message": {
+          "type": "object",
+          "properties": {
+            "startedAt": { "type": "string", "format": "date-time" },
+            "finishedAt": { "type": "string", "format": "date-time" },
+            "headers": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            },
+            "body": {}
+          }
+        }
+      }
+    }
+  }
+}
