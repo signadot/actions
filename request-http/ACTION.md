@@ -1,7 +1,7 @@
 \requires{"actionbox"}
 
 Execute an HTTP request against \input{url, required} and capture the full
-roundtrip as structured JSON written to \output{capture}.
+roundtrip as structured JSON written to \output{capture, schemaRef="schemas/capture.json"}.
 
 \input{method, default="GET"} specifies the HTTP method.
 \input{headers, schemaRef="schemas/headers.json"} is a list of `Key: Value` headers to include in the request.
@@ -35,7 +35,7 @@ Response bodies are capped at 200KB.
 
 **Output format:**
 
-\output{capture, schemaRef="schemas/capture.json"} is a JSON object:
+The capture output is a JSON object:
 
 ```json
 {
