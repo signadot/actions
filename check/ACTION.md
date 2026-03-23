@@ -1,12 +1,4 @@
----
-name: check
-description: >
-  Evaluate an Expr boolean expression against input JSON and produce a
-  pass/fail result. Use when asserting conditions on HTTP responses,
-  test outputs, or any structured data.
-requires:
-  - actionbox
----
+\requires{"actionbox"}
 
 Evaluate \input{expression, required} against \input{object, required} and
 produce \output{result} indicating pass or fail. \input{name, required}
@@ -17,7 +9,7 @@ against the input JSON object. The object is parsed as JSON and its top-level
 keys become variables in the expression. Non-boolean expressions are rejected at
 compile time.
 
-\input{attrs, schema=schemas/attrs.json} is a list of `key=value` attributes to
+\input{attrs, schemaRef="schemas/attrs.json"} is a list of `key=value` attributes to
 include in error output for additional context.
 
 \input{results_file} is a path to append results in NDJSON format. Multiple
@@ -40,7 +32,7 @@ invocations can append to the same file.
 
 **Output format:**
 
-\output{result, schema=schemas/result.json} is a `TestError` JSON object.
+\output{result, schemaRef="schemas/result.json"} is a `TestError` JSON object.
 
 Pass:
 

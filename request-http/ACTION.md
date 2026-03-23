@@ -1,12 +1,4 @@
----
-name: request-http
-description: >
-  Execute an HTTP request and capture the full request/response roundtrip as
-  structured JSON. Use when you need to send HTTP requests to services and
-  inspect responses, status codes, headers, and bodies.
-requires:
-  - actionbox
----
+\requires{"actionbox"}
 
 Execute an HTTP request against \input{url, required} and capture the full
 roundtrip as structured JSON written to \output{capture}.
@@ -43,7 +35,7 @@ Response bodies are capped at 200KB.
 
 **Output format:**
 
-\output{capture, schema=schemas/capture.json} is a JSON object:
+\output{capture, schemaRef="schemas/capture.json"} is a JSON object:
 
 ```json
 {
