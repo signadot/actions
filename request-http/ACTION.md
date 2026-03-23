@@ -4,7 +4,7 @@ Execute an HTTP request against \input{url, required} and capture the full
 roundtrip as structured JSON written to \output{capture}.
 
 \input{method, default="GET"} specifies the HTTP method.
-\input{headers, schema=schemas/headers.json} is a list of `Key: Value` headers to include in the request.
+\input{headers, schemaRef="schemas/headers.json"} is a list of `Key: Value` headers to include in the request.
 \input{body} is the request body.
 \input{timeout, default="30s"} sets the request timeout in Go duration format.
 \input{follow_redirects, default="true"} controls whether HTTP redirects are followed.
