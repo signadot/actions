@@ -1,3 +1,4 @@
+\summary{"Evaluate an expression against a JSON object and produce a pass/fail result."}
 \requires{"actionbox"}
 
 Evaluate \input{expression, required} against \input{object, required} and
