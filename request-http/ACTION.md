@@ -1,3 +1,4 @@
+\description{"Execute an HTTP request and capture the full roundtrip as structured JSON."}
 \requires{"actionbox"}
 
 Execute an HTTP request against \input{url, required} and capture the full
