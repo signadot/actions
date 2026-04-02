@@ -36,7 +36,7 @@ ACTION.md appears.
 implementation of the action. Any code block without a language tag or with `sh` or
 `bash` language tags are included in the script blocks of the ACTION.
 
-Scripts read inputs from `./input/<name>` and write outputs to
+Scripts read inputs from `./context/<name>` and write outputs to
 `./output/<name>`. **Validation blocks** use the `validation` language tag and
 are extracted separately for runner capability checks.
 
