@@ -67,5 +67,5 @@ if [ -f ./context/attrs ]; then
   done < ./context/attrs
 fi
 
-actionbox check "$@" > ./output/result
+actionbox check "$@" > ./outputs/result
 ```
