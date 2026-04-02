@@ -77,18 +77,18 @@ On transport error, the response contains an `error` field instead:
 ```
 
 ```sh
-args=(--url "$(cat ./input/url)")
+args=(--url "$(cat ./context/url)")
 
-[ -f ./input/method ] && args+=(--method "$(cat ./input/method)")
-[ -f ./input/timeout ] && args+=(--timeout "$(cat ./input/timeout)")
-[ -f ./input/follow_redirects ] && args+=(--follow-redirects="$(cat ./input/follow_redirects)")
-[ -f ./input/insecure ] && args+=(--insecure="$(cat ./input/insecure)")
-[ -f ./input/body ] && args+=(--body-file ./input/body)
+[ -f ./context/method ] && args+=(--method "$(cat ./context/method)")
+[ -f ./context/timeout ] && args+=(--timeout "$(cat ./context/timeout)")
+[ -f ./context/follow_redirects ] && args+=(--follow-redirects="$(cat ./context/follow_redirects)")
+[ -f ./context/insecure ] && args+=(--insecure="$(cat ./context/insecure)")
+[ -f ./context/body ] && args+=(--body-file ./context/body)
 
-if [ -f ./input/headers ]; then
+if [ -f ./context/headers ]; then
   while IFS= read -r header; do
     args+=(--header "$header")
-  done < ./input/headers
+  done < ./context/headers
 fi
 
 actionbox request-http "${args[@]}" > ./output/capture

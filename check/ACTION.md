@@ -55,17 +55,17 @@ Fail:
 
 ```sh
 args=(
-  --name "$(cat ./input/name)"
-  --expression "$(cat ./input/expression)"
-  --input ./input/object
+  --name "$(cat ./context/name)"
+  --expression "$(cat ./context/expression)"
+  --input ./context/object
 )
 
-[ -f ./input/results_file ] && args+=(--results-file ./input/results_file)
+[ -f ./context/results_file ] && args+=(--results-file ./context/results_file)
 
-if [ -f ./input/attrs ]; then
+if [ -f ./context/attrs ]; then
   while IFS= read -r attr; do
     args+=(--attr "$attr")
-  done < ./input/attrs
+  done < ./context/attrs
 fi
 
 actionbox check "${args[@]}" > ./output/result
