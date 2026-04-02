@@ -77,19 +77,19 @@ On transport error, the response contains an `error` field instead:
 ```
 
 ```sh
-args=(--url "$(cat ./context/url)")
+set -- --url "$(cat ./context/url)"
 
-[ -f ./context/method ] && args+=(--method "$(cat ./context/method)")
-[ -f ./context/timeout ] && args+=(--timeout "$(cat ./context/timeout)")
-[ -f ./context/follow_redirects ] && args+=(--follow-redirects="$(cat ./context/follow_redirects)")
-[ -f ./context/insecure ] && args+=(--insecure="$(cat ./context/insecure)")
-[ -f ./context/body ] && args+=(--body-file ./context/body)
+[ -f ./context/method ] && set -- "$@" --method "$(cat ./context/method)"
+[ -f ./context/timeout ] && set -- "$@" --timeout "$(cat ./context/timeout)"
+[ -f ./context/follow_redirects ] && set -- "$@" --follow-redirects="$(cat ./context/follow_redirects)"
+[ -f ./context/insecure ] && set -- "$@" --insecure="$(cat ./context/insecure)"
+[ -f ./context/body ] && set -- "$@" --body-file ./context/body
 
 if [ -f ./context/headers ]; then
   while IFS= read -r header; do
-    args+=(--header "$header")
+    set -- "$@" --header "$header"
   done < ./context/headers
 fi
 
-actionbox request-http "${args[@]}" > ./output/capture
+actionbox request-http "$@" > ./outputs/capture
 ```

@@ -54,19 +54,18 @@ Fail:
 ```
 
 ```sh
-args=(
-  --name "$(cat ./context/name)"
-  --expression "$(cat ./context/expression)"
+set -- \
+  --name "$(cat ./context/name)" \
+  --expression "$(cat ./context/expression)" \
   --input ./context/object
-)
 
-[ -f ./context/results_file ] && args+=(--results-file ./context/results_file)
+[ -f ./context/results_file ] && set -- "$@" --results-file ./context/results_file
 
 if [ -f ./context/attrs ]; then
   while IFS= read -r attr; do
-    args+=(--attr "$attr")
+    set -- "$@" --attr "$attr"
   done < ./context/attrs
 fi
 
-actionbox check "${args[@]}" > ./output/result
+actionbox check "$@" > ./outputs/result
 ```
