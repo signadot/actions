@@ -91,5 +91,5 @@ if [ -f ./context/headers ]; then
   done < ./context/headers
 fi
 
-actionbox request-http "$@" > ./outputs/capture
+actionbox request-http "$@" > ./outputs/capture.json
 ```
