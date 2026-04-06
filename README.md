@@ -47,3 +47,4 @@ are extracted separately for runner capability checks.
 | ------ | ----------- |
 | [`request-http`](request-http/ACTION.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
 | [`check`](check/ACTION.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
+| [`extract`](extract/ACTION.md) | Extract a value from a JSON object using an Expr expression |
