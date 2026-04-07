@@ -28,5 +28,8 @@ to actions that don't evaluate expressions themselves.
 - `1` — error (bad flags, malformed JSON, expression compile error)
 
 ```sh
-actionbox eval --context-dir ./context > ./outputs/result.json
+actionbox eval \
+  --expression "$(cat ./context/expression)" \
+  --extra-context ./context \
+  > ./outputs/result.json
 ```
