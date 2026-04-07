@@ -1,30 +1,27 @@
-\description{"Evaluate an expression against a JSON object and produce a pass/fail result."}
+\description{"Evaluate a boolean expression against named inputs and produce a pass/fail result."}
 \requires{"actionbox"}
 
-Evaluate \input{expression, required} against \input{object, required} and
-produce \output{result} indicating pass or fail. \input{name, required}
+Evaluate \input{expression, required} against all named inputs provided to the
+step and produce \output{result} indicating pass or fail. \input{name, required}
 identifies the check in results.
 
 The expression is an [Expr](https://expr-lang.org) boolean expression evaluated
-against the input JSON object. The object is parsed as JSON and its top-level
-keys become variables in the expression. Non-boolean expressions are rejected at
-compile time.
-
-\input{attrs, schemaRef="schemas/attrs.json"} is a list of `key=value` attributes to
-include in error output for additional context.
+against an environment built from every input file in the context directory.
+Each file becomes a top-level variable named by its filename (without extension).
+JSON files are parsed as structured values; plain files are read as strings.
+Non-boolean expressions are rejected at compile time.
 
 \input{results_file} is a path to append results in NDJSON format. Multiple
 invocations can append to the same file.
 
 **Expression examples:**
 
-| Input | Expression |
+| Inputs | Expression |
 | ----- | ---------- |
-| `{"status_code": 200}` | `status_code == 200` |
-| `{"body": "invalid quantity"}` | `body contains "invalid"` |
-| `{"items": [{"name": "a"}, {"name": "b"}]}` | `len(items) > 0 and all(items, {.name != ""})` |
-| `{"error_rate": 3.2, "threshold": 5}` | `error_rate <= threshold` |
-| `{"body": {"id": 1, "name": "foo"}}` | `"id" in keys(body) and "name" in keys(body)` |
+| `capture={"response":{"statusCode":200}}` | `capture.response.statusCode == 200` |
+| `capture={"response":{"message":{"body":"invalid"}}}` | `capture.response.message.body contains "invalid"` |
+| `capture=..., expected_status=200` | `capture.response.statusCode == expected_status` |
+| `capture=..., auth_token="secret"` | `auth_token in capture.response.message.body` |
 
 **Exit codes:**
 
@@ -47,25 +44,11 @@ Fail:
 {
   "check": "status is 200",
   "error": {
-    "message": "expression \"response.statusCode == 200\" evaluated to false",
-    "attrs": {"endpoint": "/api/items"}
+    "message": "expression \"capture.response.statusCode == 200\" evaluated to false"
   }
 }
 ```
 
 ```sh
-set -- \
-  --name "$(cat ./context/name)" \
-  --expression "$(cat ./context/expression)" \
-  --input ./context/object
-
-[ -f ./context/results_file ] && set -- "$@" --results-file ./context/results_file
-
-if [ -f ./context/attrs ]; then
-  while IFS= read -r attr; do
-    set -- "$@" --attr "$attr"
-  done < ./context/attrs
-fi
-
-actionbox check "$@" > ./outputs/result.json
+actionbox check --context-dir ./context > ./outputs/result.json
 ```
