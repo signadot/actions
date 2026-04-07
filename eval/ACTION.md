@@ -1,4 +1,4 @@
-\description{"Evaluate an Expr (expr-lang.org) expression against named inputs and return the result."}
+\description{"Evaluate an Expr expression against named inputs and return the result."}
 \requires{"actionbox"}
 
 Evaluate \input{expression, required} against all named inputs provided to the

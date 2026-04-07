@@ -1,4 +1,4 @@
-\description{"Evaluate a boolean Expr (expr-lang.org) expression against a JSON object and produce a pass/fail result."}
+\description{"Evaluate an Expr boolean expression against a JSON object for pass/fail assertions."}
 \requires{"actionbox"}
 
 Evaluate \input{expression, required} against \input{object, required} and
