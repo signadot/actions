@@ -48,3 +48,4 @@ are extracted separately for runner capability checks.
 | [`request-http`](request-http/ACTION.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
 | [`check`](check/ACTION.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
 | [`eval`](eval/ACTION.md) | Evaluate an expression against named inputs and return the result |
+| [`shell`](shell/ACTION.md) | Execute a shell script with named inputs from the context directory |
