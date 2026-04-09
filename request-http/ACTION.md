@@ -84,12 +84,7 @@ set -- --url "$(cat ./context/url)"
 [ -f ./context/follow_redirects ] && set -- "$@" --follow-redirects="$(cat ./context/follow_redirects)"
 [ -f ./context/insecure ] && set -- "$@" --insecure="$(cat ./context/insecure)"
 [ -f ./context/body ] && set -- "$@" --body-file ./context/body
-
-if [ -f ./context/headers ]; then
-  while IFS= read -r header; do
-    set -- "$@" --header "$header"
-  done < ./context/headers
-fi
+[ -f ./context/headers.json ] && set -- "$@" --headers-file ./context/headers.json
 
 actionbox request-http "$@" > ./outputs/capture.json
 ```
