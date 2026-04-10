@@ -14,6 +14,12 @@ are consumed by check itself and do NOT appear in the expression env. Bring
 plan params and step outputs into the expression by declaring them as
 `extra_inputs` on the step and wiring them via `refs`.
 
+**Every `extra_input` must declare a JSON schema** — use `{}` when the precise
+type isn't known. With a schema, the runtime writes the input to
+`./context/<name>.json` with its typed value preserved. Without a schema, it
+lands at `./context/<name>` as raw text and the expression evaluator sees a
+string instead of the typed value.
+
 Non-boolean expressions are rejected at compile time.
 
 \input{attrs, schemaRef="schemas/attrs.json"} is a JSON object of `key: value`
@@ -25,8 +31,8 @@ invocations can append to the same file.
 
 **Expression examples:**
 
-Assuming the step declares `extra_inputs: [{"name": "capture"}]` and refs
-`capture` to a previous step's HTTP capture:
+Assuming the step declares `extra_inputs: [{"name": "capture", "schema": {}}]`
+and refs `capture` to a previous step's HTTP capture:
 
 | Expression | Description |
 | ---------- | ----------- |

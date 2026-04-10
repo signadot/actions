@@ -9,11 +9,22 @@ an environment built from every input file in the context directory. Each file
 becomes a top-level variable named by its filename (without extension). JSON
 files are parsed as structured values; plain files are read as strings.
 
+**Every `extra_input` must declare a JSON schema** — use `{}` when the precise
+type isn't known. With a schema, the runtime writes the input to
+`./context/<name>.json` with its typed value preserved. Without a schema, it
+lands at `./context/<name>` as raw text and the expression evaluator sees a
+string instead of the typed value.
+
 This action is a general-purpose expression evaluator. Use it to compose values
 from multiple sources (plan params, step outputs, literals) before passing them
 to actions that don't evaluate expressions themselves.
 
 **Expression examples:**
+
+Each row assumes the input is declared as an `extra_input` on the step with an
+explicit schema — e.g. `{"name": "namespace", "schema": {"type": "string"}}`
+for a string, or `{"name": "capture", "schema": {}}` when the shape isn't
+known ahead of time.
 
 | Inputs | Expression | Result |
 | ----- | ---------- | ------ |
