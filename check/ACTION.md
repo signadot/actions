@@ -1,0 +1,80 @@
+\description{"Evaluate an Expr boolean expression against named inputs and produce a pass/fail result."}
+\requires{"actionbox"}
+
+Evaluate \input{expression, required} against the step's named inputs and
+produce \output{result} indicating pass or fail. \input{name, required}
+identifies the check in results.
+
+The expression is an [Expr](https://expr-lang.org) boolean expression evaluated
+against an environment built from every input file in the context directory.
+Each file becomes a top-level variable named by its filename (without
+extension): JSON files are parsed as structured values; plain files are read as
+strings. The reserved names `name`, `expression`, `results_file`, and `attrs`
+are consumed by check itself and do NOT appear in the expression env. Bring
+plan params and step outputs into the expression by declaring them as
+`extra_inputs` on the step and wiring them via `refs`.
+
+**Every `extra_input` must declare a JSON schema** — use `{}` when the precise
+type isn't known. With a schema, the runtime writes the input to
+`./context/<name>.json` with its typed value preserved. Without a schema, it
+lands at `./context/<name>` as raw text and the expression evaluator sees a
+string instead of the typed value.
+
+Non-boolean expressions are rejected at compile time.
+
+\input{attrs, schemaRef="schemas/attrs.json"} is a JSON object of `key: value`
+attributes that, when the check fails, are attached to the failure record for
+additional context. Pass it as a step value (or via a ref to a JSON object).
+
+\input{results_file} is a path to append results in NDJSON format. Multiple
+invocations can append to the same file.
+
+**Expression examples:**
+
+Assuming the step declares `extra_inputs: [{"name": "capture", "schema": {}}]`
+and refs `capture` to a previous step's HTTP capture:
+
+| Expression | Description |
+| ---------- | ----------- |
+| `capture.response.statusCode == 200` | Status code check |
+| `capture.response.statusCode in [200, 201, 204]` | Multiple acceptable codes |
+| `len(capture.response.message.body.items) > 0` | Non-empty body items |
+| `capture.response.message.body.error == nil` | No error in body |
+
+**Exit codes:**
+
+- `0` — check completed (passed or failed — inspect the result JSON)
+- `1` — error (bad flags, malformed JSON, expression compile error)
+
+**Output format:**
+
+\output{result, schemaRef="schemas/result.json"} is a `TestError` JSON object.
+
+Pass:
+
+```json
+{"check": "status is 200"}
+```
+
+Fail:
+
+```json
+{
+  "check": "status is 200",
+  "error": {
+    "message": "expression \"capture.response.statusCode == 200\" evaluated to false",
+    "attrs": {"endpoint": "/api/items"}
+  }
+}
+```
+
+```sh
+set -- \
+  --name "$(cat ./context/name)" \
+  --expression "$(cat ./context/expression)" \
+  --context-dir ./context
+
+[ -f ./context/results_file ] && set -- "$@" --results-file "$(cat ./context/results_file)"
+
+actionbox check "$@" > ./outputs/result.json
+```
