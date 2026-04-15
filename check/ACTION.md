@@ -1,5 +1,6 @@
 \description{"Evaluate an Expr boolean expression against named inputs and produce a pass/fail result."}
 \requires{"actionbox"}
+\extra_inputs_schema{default={}}
 
 Evaluate \input{expression, required} against the step's named inputs and
 produce \output{result} indicating pass or fail. \input{name, required}
@@ -14,11 +15,13 @@ are consumed by check itself and do NOT appear in the expression env. Bring
 plan params and step outputs into the expression by declaring them as
 `extra_inputs` on the step and wiring them via `refs`.
 
-**Every `extra_input` must declare a JSON schema** — use `{}` when the precise
-type isn't known. With a schema, the runtime writes the input to
-`./context/<name>.json` with its typed value preserved. Without a schema, it
-lands at `./context/<name>` as raw text and the expression evaluator sees a
-string instead of the typed value.
+**Extra_input schemas.** Extra_inputs on this action default to `{}` (the
+permissive "accept any" JSON Schema) when the plan author doesn't declare
+one — the compile pass fills them in. That keeps the input routed to
+`./context/<name>.json` so the expression evaluator sees a properly-typed
+value. Declaring a specific schema on an extra_input is still useful when
+the shape is known: it preserves richer type info for documentation and
+future type-aware tooling.
 
 Non-boolean expressions are rejected at compile time.
 
