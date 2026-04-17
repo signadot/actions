@@ -29,14 +29,14 @@ runner's log pipeline.
 
 ```sh
 set +e
-mkdir -p /tmp/pw
-cat ./context/script > /tmp/pw/test.spec.js
+mkdir -p $TMPDIR/pw
+cat ./context/script > $TMPDIR/pw/test.spec.js
 
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 [ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
 
-cd /tmp/pw
+cd $TMPDIR/pw
 npx playwright test test.spec.js \
   --reporter=json \
   $opts \
@@ -44,7 +44,7 @@ npx playwright test test.spec.js \
 
 ec=${PIPESTATUS[0]:-$?}
 
-cp /tmp/pw/playwright-report.json ./outputs/report.json 2>/dev/null
+cp $TMPDIR/pw/playwright-report.json ./outputs/report.json 2>/dev/null
 printf '%d' "$ec" > ./outputs/exitCode
 exit "$ec"
 ```

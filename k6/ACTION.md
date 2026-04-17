@@ -23,12 +23,12 @@ log pipeline.
 
 ```sh
 set +e
-cat ./context/script > /tmp/test.js
+cat ./context/script > $TMPDIR/test.js
 
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 
-k6 run $opts --summary-export=./outputs/summary.json /tmp/test.js
+k6 run $opts --summary-export=./outputs/summary.json $TMPDIR/test.js
 ec=$?
 
 printf '%d' "$ec" > ./outputs/exitCode

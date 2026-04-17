@@ -21,12 +21,12 @@ pipeline.
 
 ```sh
 set +e
-cat ./context/manifest > /tmp/manifest.yaml
+cat ./context/manifest > "$TMPDIR/manifest.yaml"
 
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 
-report=$(kube-score score $opts /tmp/manifest.yaml 2>&1)
+report=$(kube-score score $opts "$TMPDIR/manifest.yaml" 2>&1)
 ec=$?
 
 printf '%s' "$report" > ./outputs/report
