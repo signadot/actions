@@ -36,6 +36,7 @@ opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 [ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
 
+outdir="$PWD/outputs"
 cd "$TMPDIR/pw"
 npx playwright test test.spec.js \
   --reporter=json \
@@ -43,7 +44,7 @@ npx playwright test test.spec.js \
   > ./playwright-report.json 2>&1
 ec=$?
 
-cp "$TMPDIR/pw/playwright-report.json" ./outputs/report.json 2>/dev/null
-printf '%d' "$ec" > ./outputs/exitCode
+cp ./playwright-report.json "$outdir/report.json" 2>/dev/null
+printf '%d' "$ec" > "$outdir/exitCode"
 exit 0
 ```
