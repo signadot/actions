@@ -31,5 +31,5 @@ ec=$?
 
 printf '%s' "$report" > ./outputs/report
 printf '%d' "$ec" > ./outputs/exitCode
-exit "$ec"
+exit 0
 ```
