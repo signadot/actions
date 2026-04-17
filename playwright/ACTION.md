@@ -29,22 +29,21 @@ runner's log pipeline.
 
 ```sh
 set +e
-mkdir -p $TMPDIR/pw
-cat ./context/script > $TMPDIR/pw/test.spec.js
+mkdir -p "$TMPDIR/pw"
+cat ./context/script > "$TMPDIR/pw/test.spec.js"
 
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 [ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
 
-cd $TMPDIR/pw
+cd "$TMPDIR/pw"
 npx playwright test test.spec.js \
   --reporter=json \
   $opts \
-  > ./playwright-report.json 2>&1 || true
+  > ./playwright-report.json 2>&1
+ec=$?
 
-ec=${PIPESTATUS[0]:-$?}
-
-cp $TMPDIR/pw/playwright-report.json ./outputs/report.json 2>/dev/null
+cp "$TMPDIR/pw/playwright-report.json" ./outputs/report.json 2>/dev/null
 printf '%d' "$ec" > ./outputs/exitCode
-exit "$ec"
+exit 0
 ```
