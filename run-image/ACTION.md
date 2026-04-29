@@ -1,6 +1,7 @@
 \description{"Execute a shell script inside a caller-specified container image."}
 
-\image{ref={"input":"image"}, timeout={"input":"timeout"}}
+\image{ref={"input":"image"}}
+\timeout{{"input":"timeout"}}
 
 Execute \input{script, required} inside the container image provided
 via \input{image, required}. This is the dynamic-image counterpart
@@ -10,7 +11,7 @@ image (no containerization).
 
 \input{timeout, default=""} bounds the script's wall clock. The value
 is parsed by Go's `time.ParseDuration` (e.g. `"60s"`, `"5m"`). Empty
-means no timeout.
+falls through to the runner's system default cap.
 
 All extra_inputs declared on the step are available as named files
 in `./context/` — JSON files are parsed as structured values by the
