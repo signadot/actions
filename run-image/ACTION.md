@@ -1,6 +1,6 @@
 \description{"Execute a shell script inside a caller-specified container image."}
 
-\image{input=image}
+\image{input=image, env={"RUN_IMAGE_DEBUG":"1","FROM_DIRECTIVE":"yes"}, timeout="60s"}
 
 Execute \input{script, required} inside the container image provided
 via \input{image, required}. This is the dynamic-image counterpart
@@ -22,6 +22,7 @@ to `./outputs/<name>` and declare it via `extra_outputs`.
 
 ```sh
 set +e
+echo "[run-image action] RUN_IMAGE_DEBUG=$RUN_IMAGE_DEBUG FROM_DIRECTIVE=$FROM_DIRECTIVE"
 sh -e ./context/script
 ec=$?
 printf '%d' "$ec" >./outputs/exitCode
