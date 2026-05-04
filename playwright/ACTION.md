@@ -43,8 +43,9 @@ to `${OUTPUTS_DIR}/<name>`; the plan author declares the matching
    (`^[a-zA-Z_][a-zA-Z0-9_]*$`) — alphanumeric + underscore, no dots
    or dashes. Pick `login_screen`, not `login.png` or `login-screen`.
 2. The file name on disk must be exactly the output name **without
-   extension**. Playwright accepts extension-less paths and writes the
-   bytes for you (PNG by default for `page.screenshot`).
+   extension**. Playwright infers image type from the path's extension
+   and rejects extension-less paths (`unsupported mime type "null"`),
+   so set `type: 'png'` (or `'jpeg'`) explicitly on `page.screenshot`.
 
 Set `metadata.contentType` on the `extra_output` so downstream
 consumers render the file correctly:
@@ -58,7 +59,10 @@ consumers render the file correctly:
         const { test } = require('@playwright/test');
         test('login', async ({ page }) => {
           await page.goto(process.env.BASE_URL + '/login');
-          await page.screenshot({ path: `${process.env.OUTPUTS_DIR}/login_screen` });
+          await page.screenshot({
+            path: `${process.env.OUTPUTS_DIR}/login_screen`,
+            type: 'png',
+          });
         });
   extraOutputs:
   - name: login_screen
