@@ -77,6 +77,15 @@ opts=""
 outdir="$PWD/outputs"
 export OUTPUTS_DIR="$outdir"
 cd "$TMPDIR/pw"
+
+# The mcr.microsoft.com/playwright image ships browsers + node + npm
+# but not @playwright/test (Microsoft expects users to bring their own
+# project). Bootstrap a minimal one here so `require('@playwright/test')`
+# in the user's script resolves. Browsers come from /ms-playwright via
+# PLAYWRIGHT_BROWSERS_PATH set in the image — no browser download.
+echo '{"name":"plan-test","version":"1.0.0","private":true}' > package.json
+npm install --no-save --no-audit --no-fund --silent @playwright/test@1.59.1
+
 PLAYWRIGHT_JSON_OUTPUT_NAME="$outdir/report.json" \
   npx playwright test test.spec.js \
     --reporter=list,json \
