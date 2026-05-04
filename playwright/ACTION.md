@@ -16,6 +16,14 @@ tests that use `page.goto('/')` resolve against this — wire it to
 the sandbox's preview URL for end-to-end testing against a sandboxed
 environment.
 
+\input{dependencies} is a space-separated list of additional npm
+package specs to install before the test runs (e.g.,
+`@playwright/experimental-ct-react@1.59.1 axios@^1.6`). When omitted,
+only `@playwright/test` is installed. `@playwright/test` itself is
+always installed and pinned to the image's playwright version — it is
+not overridable through this input; fork the action with a different
+`\image{...}` to change Playwright versions.
+
 \output{exitCode, schema={"type":"integer"}} records Playwright's
 exit code: 0 = all tests passed, 1 = failures.
 
@@ -77,6 +85,8 @@ cat ./context/script > "$TMPDIR/pw/test.spec.js"
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
 [ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
+extra_deps=""
+[ -f ./context/dependencies ] && extra_deps="$(cat ./context/dependencies)"
 
 outdir="$PWD/outputs"
 export OUTPUTS_DIR="$outdir"
@@ -88,7 +98,9 @@ cd "$TMPDIR/pw"
 # in the user's script resolves. Browsers come from /ms-playwright via
 # PLAYWRIGHT_BROWSERS_PATH set in the image — no browser download.
 echo '{"name":"plan-test","version":"1.0.0","private":true}' > package.json
-npm install --no-save --no-audit --no-fund --silent @playwright/test@1.59.1
+npm install --no-save --no-audit --no-fund --silent \
+  @playwright/test@1.59.1 \
+  $extra_deps
 
 PLAYWRIGHT_JSON_OUTPUT_NAME="$outdir/report.json" \
   npx playwright test test.spec.js \
