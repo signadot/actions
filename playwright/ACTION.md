@@ -21,8 +21,8 @@ package specs to install before the test runs (e.g.,
 `@playwright/experimental-ct-react@1.59.1 axios@^1.6`). When omitted,
 only `@playwright/test` is installed. `@playwright/test` itself is
 always installed and pinned to the image's playwright version — it is
-not overridable through this input; fork the action with a different
-`\image{...}` to change Playwright versions.
+not overridable through this input; fork the action and change the
+declared image to use a different Playwright version.
 
 \output{exitCode, schema={"type":"integer"}} records Playwright's
 exit code: 0 = all tests passed, 1 = failures.
