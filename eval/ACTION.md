@@ -18,10 +18,6 @@ value. Declaring a specific schema on an extra_input is still useful when
 the shape is known: it preserves richer type info for documentation and
 future type-aware tooling.
 
-This action is a general-purpose expression evaluator. Use it to compose values
-from multiple sources (plan params, step outputs, literals) before passing them
-to actions that don't evaluate expressions themselves.
-
 **Expression examples:**
 
 Each row assumes the input is declared as an `extra_input` on the step. The
@@ -39,6 +35,31 @@ declare one like `{"type": "string"}` when the shape is known.
 
 - `0` — evaluation completed successfully
 - `1` — error (bad flags, malformed JSON, expression compile error)
+
+## Authoring rules
+
+This action is a general-purpose expression evaluator. Use it to compose values
+from multiple sources (plan params, step outputs, literals) before passing them
+to actions that don't evaluate expressions themselves.
+
+**When NOT to use `eval`:**
+
+- **For static values.** If the value is a constant known at authoring time
+  (a fixed URL, a literal number or boolean, a hardcoded JSON object), pass
+  it directly via `args.values` on the consuming step. An `eval` step that
+  emits a constant is dead weight.
+- **To parameterize a `check`.** `check` evaluates expressions natively
+  against its `extra_inputs`. Bring plan params and step outputs into the
+  check expression by declaring them as `extra_inputs` on the *check* step
+  and referencing them in the expression — do not insert an `eval` step in
+  front of the check.
+- **To pull a sub-field from a structured value** that already declares a
+  schema. Use a drill-in ref (`steps.X.outputs.Y.field` or
+  `params.X.field`) directly on the consumer step.
+
+Reach for `eval` only when a composed value must reach an action that
+does NOT evaluate expressions itself (e.g. building a URL string or a
+headers array for `request-http`).
 
 ```sh
 actionbox eval \
