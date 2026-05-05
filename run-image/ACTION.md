@@ -31,6 +31,28 @@ to `./outputs/<name>` and declare it via `extra_outputs`.
 
 **Security:** this action is gated by the org's action policy.
 
+## Authoring rules
+
+The schema on each `extra_input` picks the file the script reads:
+
+- **with schema** → `./context/<name>.json` (raw JSON bytes; consume
+  with `jq`, `python -c "import json"`, etc.)
+- **without schema** → `./context/<name>` (raw text; JSON string values
+  are unquoted, so `cat ./context/<name>` gives the string directly)
+
+Anything the script reads from `./context/` MUST be declared as an
+`extra_input` and wired via `refs` — files don't appear automatically.
+
+**Routing env vars come from `routingContext`, not from plan params.**
+When the step has `routingContext` set, the runner injects whichever of
+`SIGNADOT_ROUTING_KEY`, `SIGNADOT_SANDBOX_NAME`, and
+`SIGNADOT_ROUTEGROUP_NAME` apply to the resolved target. Read them
+directly with `$VAR` — do **not** declare a plan param like `routing_key`
+and pass it through `extra_inputs` so the script reads it from
+`./context/`. (A plan param named `sandbox` that *drives*
+`routingContext` via `{ref: {sandboxRef: params.sandbox}}` is fine; what
+isn't fine is a plan param the script reads as a routing key.)
+
 ```sh
 set +e
 sh -e ./context/script

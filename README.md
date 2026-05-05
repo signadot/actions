@@ -40,6 +40,16 @@ Scripts read inputs from `./context/<name>` and write outputs to
 `./outputs/<name>`. **Validation blocks** use the `validation` language tag and
 are extracted separately for runner capability checks.
 
+### Authoring rules section
+
+If the action has authoring guidance for plan authors — anti-patterns,
+when-not-to-use, cross-action gotchas — put it under a top-level
+`## Authoring rules` H2 section, between the descriptive prose / runtime
+behavior and the trailing implementation script block. The convention
+gives downstream consumers (e.g. the LLM compile prompt) a stable anchor
+to extract just the agent-facing text without pulling in implementation
+details. Actions that have no special rules can simply omit the section.
+
 
 ## Actions
 

@@ -3,7 +3,7 @@
 \extra_inputs_schema{default={}}
 
 Evaluate \input{expression, required} against the step's named inputs and
-produce \output{result} indicating pass or fail. \input{name, required}
+produce a `result` indicating pass or fail. \input{name, required}
 identifies the check in results.
 
 The expression is an [Expr](https://expr-lang.org) boolean expression evaluated
@@ -11,9 +11,7 @@ against an environment built from every input file in the context directory.
 Each file becomes a top-level variable named by its filename (without
 extension): JSON files are parsed as structured values; plain files are read as
 strings. The reserved names `name`, `expression`, `results_file`, and `attrs`
-are consumed by check itself and do NOT appear in the expression env. Bring
-plan params and step outputs into the expression by declaring them as
-`extra_inputs` on the step and wiring them via `refs`.
+are consumed by check itself and do NOT appear in the expression env.
 
 **Extra_input schemas.** Extra_inputs on this action default to `{}` (the
 permissive "accept any" JSON Schema) when the plan author doesn't declare
@@ -70,6 +68,18 @@ Fail:
   }
 }
 ```
+
+## Authoring rules
+
+Bring plan params and step outputs into the expression by declaring them as
+`extra_inputs` on the step and wiring them via `refs`. Reference the inputs
+by their declared names from inside the expression.
+
+**Do not insert an `eval` step in front of a check.** The `check` action
+evaluates expressions natively, so plan params and step outputs that the
+expression needs should be declared as `extra_inputs` on the check step
+itself and referenced by name in the expression. An `eval` step that
+just produces an expression string for `check` to evaluate is redundant.
 
 ```sh
 set -- \
