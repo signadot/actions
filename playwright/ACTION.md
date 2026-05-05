@@ -196,6 +196,8 @@ opts=""
 [ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
 extra_deps=""
 [ -f ./context/dependencies ] && extra_deps="$(cat ./context/dependencies)"
+capture_artifacts="false"
+[ -f ./context/capture_artifacts ] && capture_artifacts="$(cat ./context/capture_artifacts)"
 
 outdir="$PWD/outputs"
 export OUTPUTS_DIR="$outdir"
@@ -223,8 +225,6 @@ ec=$?
 # trace.zip / video.webm — no in-script race. The action's declared
 # outputs (test_artifacts, trace, video) are produced conditionally;
 # plan authors ref them via steps.X.outputs.<name> as needed.
-capture_artifacts="false"
-[ -f ./context/capture_artifacts ] && capture_artifacts="$(cat ./context/capture_artifacts)"
 if [ "$capture_artifacts" = "true" ] && [ -d ./test-results ]; then
     # Bundle the full per-test layout. Don't swallow tar errors: a
     # partial archive would mislead downstream steps. On failure we
