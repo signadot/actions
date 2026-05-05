@@ -46,7 +46,7 @@ post-run bash. See *Capturing trace, video, and other Playwright
 artifacts* under Authoring rules below for which outputs are
 surfaced.
 
-\output{test_artifacts, metadata={"contentType": "application/gzip"}}
+\output{test_artifacts, contentType="application/gzip"}
 is a tarball of `./test-results/`. Produced when
 `capture_artifacts="true"` and `./test-results/` exists. Includes
 whatever Playwright wrote into that directory: `trace.zip`,
@@ -60,14 +60,14 @@ and any custom attachments written via `testInfo.attach()`. Does
 or the blob reporter's `./blob-report/` — those are separate paths
 the action doesn't capture.
 
-\output{trace, metadata={"contentType": "application/zip"}} is a
+\output{trace, contentType="application/zip"} is a
 standalone Playwright trace. Produced only when *exactly one*
 trace.zip exists in `./test-results/` (typical of single-focal-test
 plans); the dashboard renders Playwright's trace format inline.
 Plans that ref `steps.X.outputs.trace` against a multi-test run
 will see it missing — use `test_artifacts` for that case.
 
-\output{video, metadata={"contentType": "video/webm"}} is a
+\output{video, contentType="video/webm"} is a
 standalone test recording. Produced only when *exactly one* `.webm`
 exists in `./test-results/`; the dashboard renders inline. Same
 multi-test caveat as `trace`.
