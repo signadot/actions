@@ -139,11 +139,11 @@ common items, with their inline equivalents:
 | `use.viewport`, `use.locale`, `use.timezoneId`, etc. | Same key under `test.use({ ... })` |
 | `projects: [{ name: ..., use: ... }]` | Define inline; `--project=<name>` won't resolve against a missing config |
 | `timeout`, `expect.timeout` | `test.use({ timeout: ... })` for the test timeout; `expect.configure({ timeout: ... })` once at file scope, or per-call options on assertions, for the expect timeout |
-| `reporter` | **Cannot override** — the action's `--reporter=list,json` is required to produce the `report` output. Playwright keeps only the last `--reporter` flag, so a custom reporter passed via `\input{options}` would silently break the JSON report. For raw per-test artifacts (screenshots, traces, videos, HAR, attachments), use `test_artifacts` instead of swapping reporters. |
+| `reporter` | **Cannot override** — the action's `--reporter=list,json` is required to produce the `report` output. Playwright keeps only the last `--reporter` flag, so a custom reporter passed via `\input\{options}` would silently break the JSON report. For raw per-test artifacts (screenshots, traces, videos, HAR, attachments), use `test_artifacts` instead of swapping reporters. |
 
 Things that *cannot* be ported inline: config-defined fixtures, global
 setup/teardown files, custom test runners. If the suite depends on
-those, package the suite (and its config) as a `\image{...}`-based
+those, package the suite (and its config) as a `\image\{...}`-based
 custom action instead of running it through this one.
 
 **Capturing trace, video, and other Playwright artifacts.** Set
