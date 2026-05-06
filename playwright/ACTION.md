@@ -122,22 +122,26 @@ runner's log pipeline.
 **Routing through a sandbox.** When the step has `routingContext` set,
 the runner exposes `SIGNADOT_ROUTING_KEY` in `process.env`. To route
 in-cluster `.svc` or production-domain traffic to your sandbox, inject
-the cluster's routing-key headers on every outbound request. The
-always-accepted pair is `baggage` and `tracestate` (key name
-`sd-routing-key`); the specific cluster may also accept additional
-header names — see the `signadot-plan` skill for the discovery and
-full rule.
+the cluster's routing-key headers on every outbound request.
+**Discover what your cluster accepts via the `signadot-plan` skill
+before authoring** — the cluster's `customHeaders` may include names
+beyond the always-accepted `baggage`/`tracestate` pair, and missing
+them silently routes to baseline. The snippet below shows the
+always-accepted pair only; treat it as a starting point, not a
+complete header set:
 
 ```js
 test.use({
   extraHTTPHeaders: {
     baggage: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
     tracestate: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+    // Also inject any clusterConfig.routing.customHeaders — see signadot-plan skill
   },
 });
 ```
 
-For per-request control, use `page.route()` instead:
+For per-request control, use `page.route()` instead (same
+discovery applies — add cluster custom headers alongside):
 
 ```js
 await page.route('**/*', async (route) => {
@@ -146,6 +150,7 @@ await page.route('**/*', async (route) => {
       ...route.request().headers(),
       baggage: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
       tracestate: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+      // Also inject any clusterConfig.routing.customHeaders
     },
   });
 });
