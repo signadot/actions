@@ -119,6 +119,41 @@ runner's log pipeline.
 
 ## Authoring rules
 
+**Routing through a sandbox.** When the step has `routingContext` set,
+the runner exposes `SIGNADOT_ROUTING_KEY` in `process.env`. To route
+in-cluster `.svc` or production-domain traffic to your sandbox, inject
+the cluster's routing-key headers on every outbound request. The
+always-accepted pair is `baggage` and `tracestate` (key name
+`sd-routing-key`); the specific cluster may also accept additional
+header names — see the `signadot-plan` skill for the discovery and
+full rule.
+
+```js
+test.use({
+  extraHTTPHeaders: {
+    baggage: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+    tracestate: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+  },
+});
+```
+
+For per-request control, use `page.route()` instead:
+
+```js
+await page.route('**/*', async (route) => {
+  await route.continue({
+    headers: {
+      ...route.request().headers(),
+      baggage: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+      tracestate: `sd-routing-key=${process.env.SIGNADOT_ROUTING_KEY}`,
+    },
+  });
+});
+```
+
+Skip injection only when `base_url` is the sandbox preview URL — the
+platform's edge auto-injects on that path.
+
 **Capturing screenshots and other binary artifacts.** Test code writes
 to `${OUTPUTS_DIR}/<name>`; the plan author declares the matching
 `extra_outputs` on the step. Two constraints:

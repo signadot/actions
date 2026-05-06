@@ -46,6 +46,31 @@ log pipeline.
 
 ## Authoring rules
 
+**Routing through a sandbox.** When the step has `routingContext`
+set, the runner exposes `SIGNADOT_ROUTING_KEY` to the script
+(`__ENV.SIGNADOT_ROUTING_KEY`). Inject the cluster's routing-key
+headers on every outbound request. The always-accepted pair is
+`baggage` and `tracestate` (key name `sd-routing-key`); the specific
+cluster may also accept additional header names — see the
+`signadot-plan` skill for the discovery and full rule.
+
+```js
+import http from 'k6/http';
+const KEY = __ENV.SIGNADOT_ROUTING_KEY;
+const headers = {
+  baggage: `sd-routing-key=${KEY}`,
+  tracestate: `sd-routing-key=${KEY}`,
+};
+
+export default function () {
+  http.get(__ENV.TARGET_URL, { headers });
+}
+```
+
+For suites with many requests, attach the headers via the `params`
+default at module scope, or pass per-request via the `params`
+argument to each `http.<method>` call.
+
 **Capturing custom artifacts.** Test code writes to
 `${__ENV.OUTPUTS_DIR}/<name>`; the plan author declares the matching
 `extra_outputs` on the step. Two constraints:
