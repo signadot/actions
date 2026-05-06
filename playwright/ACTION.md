@@ -19,15 +19,43 @@ later `--reporter=...` would replace that, silently breaking the
 JSON report. When omitted, Playwright runs the test as-is with its
 defaults.
 
-\input{baseURL} sets the `BASE_URL` environment variable in the
+\input{base_url} sets the `BASE_URL` environment variable in the
 script's runtime. Playwright does *not* auto-wire env vars into its
 config — your test code has to read `process.env.BASE_URL` explicitly,
 either by passing it to `page.goto()`
 (`page.goto(process.env.BASE_URL + '/login')`) or by registering it
 once at the top of the script via
 `test.use({ baseURL: process.env.BASE_URL })` so bare `page.goto('/')`
-resolves against it. Wire `baseURL` to the sandbox's preview URL for
-end-to-end testing against a sandboxed environment.
+resolves against it. Three viable targets, pick by what the test
+depends on:
+
+- **In-cluster `.svc` address** (e.g.
+  `http://<svc>.<namespace>.svc:<port>`) — fastest path; the runner
+  is in-cluster, the request stays in-cluster. Right when the test
+  just exercises HTTP/JSON endpoints, doesn't load real frontend
+  assets, and doesn't depend on TLS, hostname, or cookie domain.
+- **Sandbox preview URL** (`*.preview.signadot.com`) — gives real
+  TLS, but on a Signadot-owned hostname. Works for many
+  full-frontend tests, but breaks anything pinned to the production
+  domain: SSO / OAuth flows whose redirect URIs only accept the
+  production host, cookies bound by `Domain=app.example.com`,
+  production CSP rules, etc.
+- **Production / external domain + routing key header** — set
+  `base_url` to the real production URL (e.g.
+  `https://app.example.com`) and inject the routing key
+  (typically `baggage: sd-routing-key=$SIGNADOT_ROUTING_KEY`) into
+  every outbound request via `test.use({ extraHTTPHeaders: { ... } })`
+  or a `page.route('**/*', ...)` hook. The cluster's edge reads the
+  header and routes to the sandbox. Right when the test exercises
+  auth flows pinned to the production domain. Requires the cluster
+  to actually serve traffic for that hostname (production cluster
+  or production-shaped staging) and `routingContext` set on the
+  step so `SIGNADOT_ROUTING_KEY` is in env.
+
+Default to `.svc` for cheap API-shape tests; escalate to the preview
+URL when bare `.svc` trips a TLS / host issue; escalate to the
+production domain when the preview URL trips a domain-pinned auth /
+cookie / CSP issue.
 
 \input{dependencies} is a space-separated list of additional npm
 package specs to install before the test runs (e.g.,
@@ -72,7 +100,7 @@ standalone test recording. Produced only when *exactly one* `.webm`
 exists in `./test-results/`; the dashboard renders inline. Same
 multi-test caveat as `trace`.
 
-\output{exitCode, schema={"type":"integer"}} records Playwright's
+\output{exit_code, schema={"type":"integer"}} records Playwright's
 exit code: 0 = all tests passed, 1 = failures.
 
 \output{report, schema={"type":"object"}} captures the JSON test
@@ -193,7 +221,7 @@ cat ./context/script > "$TMPDIR/pw/test.spec.js"
 
 opts=""
 [ -f ./context/options ] && opts="$(cat ./context/options)"
-[ -f ./context/baseURL ] && export BASE_URL="$(cat ./context/baseURL)"
+[ -f ./context/base_url ] && export BASE_URL="$(cat ./context/base_url)"
 extra_deps=""
 [ -f ./context/dependencies ] && extra_deps="$(cat ./context/dependencies)"
 capture_artifacts="false"
@@ -249,6 +277,6 @@ if [ "$capture_artifacts" = "true" ] && [ -d ./test-results ]; then
     fi
 fi
 
-printf '%d' "$ec" > "$outdir/exitCode"
+printf '%d' "$ec" > "$outdir/exit_code"
 exit 0
 ```

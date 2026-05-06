@@ -19,10 +19,10 @@ runner's context loader; plain files are read as strings. Bridge them
 to env vars in the script if needed:
 
 ```text
-[ -f ./context/baseURL ] && export BASE_URL=$(cat ./context/baseURL)
+[ -f ./context/base_url ] && export BASE_URL=$(cat ./context/base_url)
 ```
 
-\output{exitCode, schema={"type":"integer"}} records the script's
+\output{exit_code, schema={"type":"integer"}} records the script's
 exit code. Non-zero means the script failed.
 
 Stdout and stderr flow through the runner's log pipeline. If a
@@ -57,6 +57,6 @@ isn't fine is a plan param the script reads as a routing key.)
 set +e
 sh -e ./context/script
 ec=$?
-printf '%d' "$ec" >./outputs/exitCode
+printf '%d' "$ec" >./outputs/exit_code
 exit "$ec"
 ```
