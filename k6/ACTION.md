@@ -34,9 +34,19 @@ check results. Downstream steps can branch on specific metric values.
 Common key paths: `summary.metrics.http_req_duration['p(95)']`
 (latency percentile), `summary.metrics.http_req_failed.value`
 (failure rate `0.0`–`1.0`), `summary.metrics.http_reqs.count`
-(request count). Note: each `thresholds.<expr>` boolean is `true`
-when the threshold was *violated*, `false` when it passed — the
-opposite of the intuitive reading.
+(request count).
+
+**Two k6 fields read the opposite of their natural names** — read
+both carefully when authoring assertions:
+
+1. `thresholds.<expr>` boolean is `true` when the threshold was
+   *violated*, `false` when it passed.
+2. On Rate metrics, `.passes` counts the underlying check evaluating
+   *true* and `.fails` counts it evaluating *false*. For
+   `http_req_failed` (the underlying check is "did this request
+   fail?") that means `.fails` is the count of *successful*
+   requests, not failures. Use `.value` (the rate, `0.0`–`1.0`)
+   when you want the failure rate.
 
 The `OUTPUTS_DIR` environment variable points at the action's output
 directory. Test code can write arbitrary files there (custom data
