@@ -31,9 +31,12 @@ mixing the two.
 \output{summary, schema={"type":"object"}} captures the JSON summary
 produced by `--summary-export`. Contains metrics, thresholds, and
 check results. Downstream steps can branch on specific metric values.
-Note: each `thresholds.<expr>` boolean is `true` when the threshold
-was *violated*, `false` when it passed — the opposite of the
-intuitive reading.
+Common key paths: `summary.metrics.http_req_duration['p(95)']`
+(latency percentile), `summary.metrics.http_req_failed.value`
+(failure rate `0.0`–`1.0`), `summary.metrics.http_reqs.count`
+(request count). Note: each `thresholds.<expr>` boolean is `true`
+when the threshold was *violated*, `false` when it passed — the
+opposite of the intuitive reading.
 
 The `OUTPUTS_DIR` environment variable points at the action's output
 directory. Test code can write arbitrary files there (custom data
@@ -70,6 +73,43 @@ export default function () {
 For suites with many requests, attach the headers via the `params`
 default at module scope, or pass per-request via the `params`
 argument to each `http.<method>` call.
+
+**Asserting on a metric — two patterns, different effects:**
+
+- **k6 `thresholds`** (in the script) — *plan-level gate.* A
+  violation makes k6 exit non-zero, failing the step and the plan.
+  The plan's `status.phase` reflects the assertion outcome:
+
+  ```js
+  export const options = {
+    thresholds: {
+      http_req_duration: ['p(95)<500'],
+      http_req_failed:   ['rate<0.01'],
+    },
+  };
+  ```
+
+- **Downstream `check` step** — *assertion record, not a gate.* The
+  `check` action exits 0 whether the expression is true or false
+  (by design — the outcome lives in `result.error`). The plan's
+  phase stays *succeeded* on a violation; downstream consumers
+  inspect check results to decide overall pass/fail. Use this when
+  assertions are part of a structured report (CI output, plan-level
+  outputs) rather than driving plan-level pass/fail. Also useful
+  when the assertion needs an expression k6's threshold DSL can't
+  express, or composes inputs from multiple steps.
+
+If you need the plan's phase to reflect the assertion, use k6
+thresholds (or wire a downstream shell/eval step that reads the
+check result and exits non-zero on failure).
+
+**Always include `http_req_failed`** as one of your gates —
+regardless of which form. Without it, a connection-refused or
+all-non-2xx run reports `"16033 complete iterations"` with
+`data_received: 0 B` and zero durations; k6 won't surface the
+failure in its summary unless a threshold or `check()` catches it.
+**Pattern: zero metrics + nonzero iteration count = HTTP non-2xx or
+connection failure.** Most common silent-success-shaped failure mode.
 
 **Capturing custom artifacts.** Test code writes to
 `${__ENV.OUTPUTS_DIR}/<name>`; the plan author declares the matching
