@@ -40,6 +40,16 @@ Scripts read inputs from `./context/<name>` and write outputs to
 `./outputs/<name>`. **Validation blocks** use the `validation` language tag and
 are extracted separately for runner capability checks.
 
+### Authoring rules section
+
+If the action has authoring guidance for plan authors — anti-patterns,
+when-not-to-use, cross-action gotchas — put it under a top-level
+`## Authoring rules` H2 section, between the descriptive prose / runtime
+behavior and the trailing implementation script block. The convention
+gives downstream consumers (e.g. the LLM compile prompt) a stable anchor
+to extract just the agent-facing text without pulling in implementation
+details. Actions that have no special rules can simply omit the section.
+
 
 ## Actions
 
@@ -48,4 +58,5 @@ are extracted separately for runner capability checks.
 | [`request-http`](request-http/ACTION.md) | Execute an HTTP request and capture the full roundtrip as structured JSON |
 | [`check`](check/ACTION.md) | Evaluate an Expr boolean expression against input JSON for pass/fail assertions |
 | [`eval`](eval/ACTION.md) | Evaluate an expression against named inputs and return the result |
-| [`shell`](shell/ACTION.md) | Execute a shell script with named inputs from the context directory |
+| [`k6`](k6/ACTION.md) | Run a k6 load test and capture the summary |
+| [`playwright`](playwright/ACTION.md) | Run Playwright browser tests and capture results |
