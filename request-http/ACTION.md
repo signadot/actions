@@ -11,10 +11,12 @@ roundtrip as structured JSON written to \output{capture, schemaRef="schemas/capt
 \input{follow_redirects, default="true"} controls whether HTTP redirects are followed.
 \input{insecure, default="false"} skips TLS certificate verification when set.
 
-**Routing key injection:** If the `SIGNADOT_ROUTING_KEY` environment variable is
-set, routing headers are automatically injected into the request using multiple
-propagation formats (OTel baggage, tracestate, Jaeger, Datadog, and custom
-headers from cluster config).
+**Routing key injection:** When the step has `routingContext` set
+(which exposes `SIGNADOT_ROUTING_KEY`), the action automatically
+injects routing-key headers across multiple propagation formats —
+OTel baggage, tracestate, Jaeger, Datadog, and any `customHeaders`
+from the cluster's config. No manual header injection at the plan
+spec level.
 
 **Header sanitization:** Sensitive headers are removed from the capture output.
 Request: `Cookie`, `Authorization`, `Authentication`. Response: `Set-Cookie`.
