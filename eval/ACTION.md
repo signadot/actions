@@ -3,7 +3,9 @@
 \extra_inputs_schema{default={}}
 
 Evaluate \input{expression, required} against all named inputs provided to the
-step and return the result as \output{result}.
+step and return the result as \output{result, schema={}}. The `{}` schema marks
+the result as intentionally generic (JSON-any) so it can feed a typed input
+downstream.
 
 The expression is an [Expr](https://expr-lang.org) expression evaluated against
 an environment built from every input file in the context directory. Each file
