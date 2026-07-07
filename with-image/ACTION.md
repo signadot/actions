@@ -4,8 +4,8 @@
 \timeout{{"input":"timeout"}}
 
 Execute \input{script, required} inside the container image provided
-via \input{image, required}. This is the dynamic-image counterpart
-of the `shell` action — the caller picks the image at plan
+via \input{image, default=""}. This is `with-image`, the dynamic-image
+counterpart of the `shell` action — the caller picks the image at plan
 invocation time. An empty image runs the script in the runner's base
 image (no containerization).
 
