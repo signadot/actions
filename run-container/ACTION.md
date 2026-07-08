@@ -4,10 +4,11 @@
 \timeout{{"input":"timeout"}}
 
 Execute \input{script, required} inside the container image provided
-via \input{image, required}. This is the dynamic-image counterpart
-of the `shell` action — the caller picks the image at plan
-invocation time. An empty image runs the script in the runner's base
-image (no containerization).
+via \input{image, required}. This is `run-container`, the dynamic-image
+counterpart of the `run-shell` action — the caller picks the image at
+plan invocation time. The image is required: to run a script on the
+runner's base image (no containerization), use the `run-shell` action
+instead.
 
 \input{timeout, default=""} bounds the script's wall clock. The value
 is parsed by Go's `time.ParseDuration` (e.g. `"60s"`, `"5m"`). Empty
