@@ -60,3 +60,4 @@ details. Actions that have no special rules can simply omit the section.
 | [`eval`](eval/ACTION.md) | Evaluate an expression against named inputs and return the result |
 | [`k6`](k6/ACTION.md) | Run a k6 load test and capture the summary |
 | [`playwright`](playwright/ACTION.md) | Run Playwright browser tests and capture results |
+| [`run-container`](run-container/ACTION.md) | Execute a shell script inside a caller-specified container image |
